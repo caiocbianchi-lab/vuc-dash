@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VUC · Docas Externas — 03/06</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f5f4f1;
+  --surf:     #ffffff;
+  --surf2:    #f0eeea;
+  --border:   #e0ddd7;
+  --text:     #1a1916;
+  --text2:    #5c5a54;
+  --text3:    #9c9a94;
+  --green:    #1a7a52;
+  --green-d:  #e6f4ed;
+  --green-m:  #2ea86e;
+  --red:      #c0392b;
+  --red-d:    #fcecea;
+  --red-m:    #c0392b;
+  --amber:    #9a5c00;
+  --amber-d:  #fdf3e0;
+  --blue:     #1a4f8a;
+  --blue-d:   #e8f0fb;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'IBM Plex Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--surf);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: .06em;
+}
+.topbar-sep { width: 1px; height: 18px; background: var(--border); }
+.topbar-title { font-size: 13px; color: var(--text2); }
+.topbar-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 1200px; margin: 0 auto; padding: 28px 24px 60px; }
+
+/* ── KPIs ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+.kpi {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  animation: fadeUp .4s ease both;
+}
+.kpi:nth-child(1){animation-delay:.05s}
+.kpi:nth-child(2){animation-delay:.1s}
+.kpi:nth-child(3){animation-delay:.15s}
+.kpi:nth-child(4){animation-delay:.2s}
+.kpi-label { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.kpi-value { font-size: 32px; font-weight: 600; line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 6px; }
+.kpi-value.g { color: var(--green); }
+.kpi-value.r { color: var(--red); }
+.kpi-value.a { color: var(--amber); }
+
+/* ── SECTION ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 14px;
+}
+.section-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ── BLOCOS GRID ── */
+.blocos-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 28px; }
+.bloco {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 12px 14px;
+  cursor: pointer;
+  transition: border-color .2s, transform .15s;
+  animation: fadeUp .5s ease both;
+}
+.bloco:hover { transform: translateY(-2px); }
+.bloco.ok { border-color: var(--green-m); }
+.bloco.warn { border-color: var(--amber); background: var(--amber-d); }
+.bloco.late { border-color: var(--red); background: var(--red-d); border-width: 2px; }
+.bloco-name {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.bloco.late .bloco-name { color: var(--red); }
+.bloco.warn .bloco-name { color: var(--amber); }
+.bloco.ok .bloco-name { color: var(--green); }
+.bloco-stat { font-size: 11px; color: var(--text3); line-height: 1.4; }
+.bloco.late .bloco-stat { color: #c47070; }
+.bloco.warn .bloco-stat { color: #c49040; }
+.bloco.ok .bloco-stat { color: #50a880; }
+.bloco-badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.bloco.ok .bloco-badge { background: var(--green-d); color: var(--green); }
+.bloco.warn .bloco-badge { background: var(--amber-d); color: var(--amber); }
+.bloco.late .bloco-badge { background: var(--red-d); color: var(--red); }
+
+/* ── GIRO BARS ── */
+.giro-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.giro-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+}
+.giro-card-title { font-family: var(--mono); font-size: 10px; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.bar-label { font-size: 13px; font-weight: 500; min-width: 72px; color: var(--text); }
+.bar-track { flex: 1; height: 8px; background: var(--surf2); border-radius: 4px; overflow: hidden; display: flex; }
+.seg-ok { background: var(--green); height: 100%; }
+.seg-late { background: var(--red); height: 100%; }
+.bar-count { font-family: var(--mono); font-size: 10px; color: var(--text3); min-width: 110px; text-align: right; }
+.bar-legend { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); }
+.leg-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* ── ALERTAS ── */
+.alerts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+.alert {
+  border-radius: 8px;
+  padding: 14px 16px;
+  border-left: 3px solid;
+  animation: fadeUp .4s ease both;
+}
+.alert.danger { background: var(--red-d); border-color: var(--red); }
+.alert.warn   { background: var(--amber-d); border-color: var(--amber); }
+.alert.info   { background: var(--blue-d); border-color: var(--blue); }
+.alert.success{ background: var(--green-d); border-color: var(--green); }
+.alert-title { font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+.alert.danger .alert-title { color: var(--red); }
+.alert.warn   .alert-title { color: var(--amber); }
+.alert.info   .alert-title { color: var(--blue); }
+.alert.success .alert-title { color: var(--green); }
+.alert-body { font-size: 11px; color: var(--text2); line-height: 1.6; }
+
+/* ── ROTA TABLE GRID ── */
+.tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.tbl-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.tbl-card-header {
+  padding: 12px 16px;
+  background: var(--surf2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th {
+  padding: 7px 10px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  background: var(--surf2);
+}
+td {
+  padding: 7px 10px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+tr:last-child td { border-bottom: none; }
+tr.is-late td { background: rgba(192,57,43,.07); }
+tr.is-late td:first-child { border-left: 2px solid var(--red); }
+tr.is-high td { background: rgba(154,92,0,.07); }
+tr.is-high td:first-child { border-left: 2px solid var(--amber); }
+.badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: .04em;
+}
+.badge.ok   { background: var(--green-d); color: var(--green); }
+.badge.late { background: var(--red-d);   color: var(--red); }
+
+/* ── TOP ADUANA (full width) ── */
+.full-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.full-card-header {
+  padding: 12px 16px;
+  background: var(--surf2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-txt { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.bloco:nth-child(1){animation-delay:.08s}
+.bloco:nth-child(2){animation-delay:.11s}
+.bloco:nth-child(3){animation-delay:.14s}
+.bloco:nth-child(4){animation-delay:.17s}
+.bloco:nth-child(5){animation-delay:.20s}
+.bloco:nth-child(6){animation-delay:.23s}
+.bloco:nth-child(7){animation-delay:.26s}
+.bloco:nth-child(8){animation-delay:.29s}
+.bloco:nth-child(9){animation-delay:.32s}
+.bloco:nth-child(10){animation-delay:.35s}
+
+@media(max-width:768px){
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .blocos-grid { grid-template-columns: repeat(5,1fr); gap:6px; }
+  .bloco { padding: 10px 8px; }
+  .bloco-name { font-size: 14px; }
+  .giro-section { grid-template-columns: 1fr; }
+  .alerts-grid { grid-template-columns: 1fr; }
+  .tables-grid { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 16px; }
+  .page { padding: 16px 12px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-logo">VUC</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-title">Docas Externas — Painel de Rotas</span>
+  </div>
+  <span class="topbar-date">03 / jun / 2025</span>
+</div>
+
+<div class="page">
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Total de rotas</div>
+      <div class="kpi-value">74</div>
+      <div class="kpi-sub">1º, 3º e 4º Giro</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">No prazo</div>
+      <div class="kpi-value g">57</div>
+      <div class="kpi-sub">77% das rotas</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Atrasadas</div>
+      <div class="kpi-value r">17</div>
+      <div class="kpi-sub">23% das rotas</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Maior aduana</div>
+      <div class="kpi-value a">46 min</div>
+      <div class="kpi-sub">Bloco G — G5 & G6</div>
+    </div>
+  </div>
+
+  <!-- BLOCOS -->
+  <div class="section-header">
+    <span class="section-tag">Blocos de carregamento A–J</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="blocos-grid">
+    <div class="bloco ok">
+      <div class="bloco-name">A</div>
+      <div class="bloco-stat">0 atrasos<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge">OK</span>
+    </div>
+    <div class="bloco" style="border-color:#f5c8c8">
+      <div class="bloco-name" style="color:#1a1916">B</div>
+      <div class="bloco-stat" style="color:#c0392b">2 atrasos<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge" style="background:var(--red-d);color:var(--red)">2 ATRASOS</span>
+    </div>
+    <div class="bloco ok">
+      <div class="bloco-name">C</div>
+      <div class="bloco-stat">0 atrasos<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge">OK</span>
+    </div>
+    <div class="bloco" style="border-color:#f5c8c8">
+      <div class="bloco-name" style="color:#1a1916">D</div>
+      <div class="bloco-stat" style="color:#c0392b">1 atraso<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge" style="background:var(--red-d);color:var(--red)">1 ATRASO</span>
+    </div>
+    <div class="bloco warn">
+      <div class="bloco-name">E</div>
+      <div class="bloco-stat">0 atrasos<br>44 min máx aduana</div>
+      <span class="bloco-badge">ATENÇÃO</span>
+    </div>
+    <div class="bloco" style="border-color:#f5c8c8">
+      <div class="bloco-name" style="color:#1a1916">F</div>
+      <div class="bloco-stat" style="color:#c0392b">1 atraso<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge" style="background:var(--red-d);color:var(--red)">1 ATRASO</span>
+    </div>
+    <div class="bloco warn">
+      <div class="bloco-name">G</div>
+      <div class="bloco-stat">0 atrasos<br>46 min máx aduana</div>
+      <span class="bloco-badge">ATENÇÃO</span>
+    </div>
+    <div class="bloco ok">
+      <div class="bloco-name">H</div>
+      <div class="bloco-stat">0 atrasos<br>6 rotas · 1º Giro</div>
+      <span class="bloco-badge">OK</span>
+    </div>
+    <div class="bloco late">
+      <div class="bloco-name">I</div>
+      <div class="bloco-stat">7 atrasos<br>19 rotas · todos giros</div>
+      <span class="bloco-badge">⚠ CRÍTICO</span>
+    </div>
+    <div class="bloco late">
+      <div class="bloco-name">J</div>
+      <div class="bloco-stat">6 atrasos<br>15 rotas · todos giros</div>
+      <span class="bloco-badge">⚠ CRÍTICO</span>
+    </div>
+  </div>
+
+  <!-- GIROS + ALERTAS lado a lado -->
+  <div class="section-header">
+    <span class="section-tag">Atraso por giro</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="giro-section">
+    <div class="giro-card">
+      <div class="giro-card-title">Composição de atrasos</div>
+      <div class="bar-row">
+        <span class="bar-label">1º Giro</span>
+        <div class="bar-track">
+          <div class="seg-ok" style="width:93%"></div>
+          <div class="seg-late" style="width:7%"></div>
+        </div>
+        <span class="bar-count">4 atrasos / 54</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">3º Giro</span>
+        <div class="bar-track">
+          <div class="seg-ok" style="width:27%"></div>
+          <div class="seg-late" style="width:73%"></div>
+        </div>
+        <span class="bar-count">8 atrasos / 11 (N)</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">4º Giro</span>
+        <div class="bar-track">
+          <div class="seg-ok" style="width:50%"></div>
+          <div class="seg-late" style="width:50%"></div>
+        </div>
+        <span class="bar-count">5 atrasos / 10 (J)</span>
+      </div>
+      <div class="bar-legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>No prazo</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--red)"></div>Atrasadas</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="alert danger">
+        <div class="alert-title">⚠ Blocos I e J — 13 atrasos combinados</div>
+        <div class="alert-body">3º e 4º Giros concentram quase todos os atrasos. Maioria sem tempo de aduana registrado — rotas podem não ter saído.</div>
+      </div>
+      <div class="alert warn">
+        <div class="alert-title">◷ 3º Giro — possível impacto de almoço</div>
+        <div class="alert-body">Padrão de atrasos com aduana em branco sugere reps em pausa. Revisar escalonamento nas vagas I e J.</div>
+      </div>
+      <div class="alert warn">
+        <div class="alert-title">◉ Blocos G e E — alto tempo de aduana</div>
+        <div class="alert-body">46 e 44 min respectivamente. No prazo hoje, mas vagas de atenção preventiva.</div>
+      </div>
+      <div class="alert success">
+        <div class="alert-title">✓ Blocos A, C e H — referência do dia</div>
+        <div class="alert-body">100% no prazo em todos os giros. Mapear práticas para replicar nos blocos críticos.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABELAS BLOCOS I e J -->
+  <div class="section-header">
+    <span class="section-tag">Detalhe — Blocos I e J</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="tables-grid">
+    <div class="tbl-card">
+      <div class="tbl-card-header">Bloco I — todas as rotas</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Giro</th><th>Rota</th><th>Aduana</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>1º</td><td>D11_AM999</td><td>18 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D12_AM999</td><td>29 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D13_AM999</td><td>7 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D14_AM999</td><td>39 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D15_AM999</td><td>28 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D16_AM999</td><td>19 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N1_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>3º</td><td>N2_AM</td><td>15 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N3_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N4_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>3º</td><td>N5_AM</td><td>9 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N6_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>3º</td><td>N7_AM</td><td>8 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N8_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>4º</td><td>J1_AM</td><td>17 min</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>4º</td><td>J2_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>4º</td><td>J3_AM</td><td>14 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>4º</td><td>J4_AM</td><td>19 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>4º</td><td>J5_AM</td><td>10 min</td><td><span class="badge late">ATRASO</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tbl-card">
+      <div class="tbl-card-header">Bloco J — todas as rotas</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Giro</th><th>Rota</th><th>Aduana</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>1º</td><td>D17_AM999</td><td>20 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>1º</td><td>D18_AM999</td><td>28 min</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>1º</td><td>D19_AM999</td><td>19 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D20_AM999</td><td>30 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D21_AM999</td><td>9 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>1º</td><td>D22_AM999</td><td>17 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N9_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N10_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N11_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr class="is-late"><td>3º</td><td>N12_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>4º</td><td>J6_AM</td><td>15 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>4º</td><td>J7_AM</td><td>14 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>4º</td><td>J8_AM</td><td>—</td><td><span class="badge late">ATRASO</span></td></tr>
+            <tr><td>4º</td><td>J9_AM</td><td>16 min</td><td><span class="badge ok">OK</span></td></tr>
+            <tr class="is-late"><td>4º</td><td>J10_AM</td><td>18 min</td><td><span class="badge late">ATRASO</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP ADUANA -->
+  <div class="section-header">
+    <span class="section-tag">Maiores tempos de aduana — 1º Giro</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="full-card">
+    <div class="full-card-header">Ranking por tempo de aduana</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Bloco</th><th>Vaga</th><th>Rota</th><th>Aduana</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="is-high"><td>#1</td><td>G</td><td>G 5 & G 6</td><td>D2_AM999</td><td><strong>46 min</strong></td><td><span class="badge ok">OK</span></td></tr>
+          <tr class="is-high"><td>#2</td><td>E</td><td>E 2 & E 3</td><td>C5_AM999</td><td><strong>44 min</strong></td><td><span class="badge ok">OK</span></td></tr>
+          <tr class="is-high"><td>#3</td><td>E</td><td>E 4</td><td>C6_AM999</td><td><strong>44 min</strong></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td>#4</td><td>G</td><td>G 8 & G 9</td><td>D4_AM999</td><td>42 min</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td>#5</td><td>F</td><td>F 16</td><td>C16_AM999</td><td>41 min</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td>#6</td><td>I</td><td>I 5 & I 6</td><td>D14_AM999</td><td>39 min</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td>#7</td><td>E</td><td>E 1</td><td>C4_AM999</td><td>39 min</td><td><span class="badge ok">OK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-txt">VUC · Docas Externas · 03/06/2025 · 74 rotas</span>
+    <span class="footer-txt">1º, 3º e 4º Giro</span>
+  </div>
+
+</div>
+</body>
+</html>
